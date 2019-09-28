@@ -9,8 +9,10 @@ public class Endpoint {
     public static final String LOGIN_URL = "https://www.instagram.com/accounts/login/ajax/";
     public static final String MEDIA_LINK = "https://www.instagram.com/p/{{code}}";
     public static final String ACCOUNT_JSON_INFO = "https://www.instagram.com/{{username}}/?__a=1";
+    public static final String ACCOUNT_INFO = "https://www.instagram.com/{{username}}/";
     public static final String ACCOUNT_MEDIAS = "https://instagram.com/graphql/query/?query_id=17888483320059182&id={{userId}}&first=30&after={{maxId}}";
     public static final String TAG_JSON_INFO = "https://www.instagram.com/explore/tags/{{tag_name}}/?__a=1";
+    public static final String TAG_INFO = "https://www.instagram.com/explore/tags/{{tag_name}}/";
     public static final String MEDIA_JSON_INFO = "https://www.instagram.com/p/{{code}}/?__a=1";
     public static final String MEDIA_JSON_BY_LOCATION_ID = "https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1&max_id={{maxId}}";
     public static final String MEDIA_JSON_BY_TAG = "https://www.instagram.com/explore/tags/{{tag}}/?__a=1&max_id={{maxId}}";
@@ -48,6 +50,10 @@ public class Endpoint {
         return ACCOUNT_JSON_INFO.replace(USERNAME, username);
     }
 
+    public static String getAccountLink(String username) {
+        return ACCOUNT_INFO.replace(USERNAME, username);
+    }
+
     public static String getAccountJsonInfoLinkByAccountId(long userId) {
         return ACCOUNT_JSON_INFO_BY_ID.replace(USER_ID, "" + userId);
     }
@@ -61,6 +67,10 @@ public class Endpoint {
 
     public static String getTagJsonByTagName(String tagName) {
         return TAG_JSON_INFO.replace(TAG_NAME, tagName);
+    }
+
+    public static String getTagByTagName(String tagName) {
+        return TAG_INFO.replace(TAG_NAME, tagName);
     }
 
     public static String getMediaPageLinkByCode(String code) {

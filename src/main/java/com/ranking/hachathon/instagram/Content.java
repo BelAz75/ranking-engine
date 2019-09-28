@@ -5,4 +5,5 @@ public class Content {
   public int width;
   public String imageUrl;
   public String videoUrl;
+  public int videoViewCount;
 }
