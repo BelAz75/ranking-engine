@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UnifiedPostRepository extends JpaRepository<String, UnifiedPost> {
+public interface UnifiedPostRepository extends JpaRepository<UnifiedPost, String> {
 }
