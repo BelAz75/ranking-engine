@@ -37,6 +37,10 @@ dependencies {
 
 //	implementation('org.springframework.boot:spring-boot-starter-security')
     compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+	compile group: 'com.github.igor-suhorukov', name: 'instagramscraper', version: '2.2'
+	compile('com.vk.api:sdk:1.0.6') {
+		exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+	}
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
