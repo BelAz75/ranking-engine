@@ -1,7 +1,10 @@
 package com.ranking.hachathon.vk;
 
-import com.ranking.hachathon.user.User;
-import com.ranking.hachathon.user.UserRepository;
+import com.ranking.hachathon.account.AccountRepository;
+import com.ranking.hachathon.account.UserAccount;
+import com.ranking.hachathon.posts.SourceType;
+import com.ranking.hachathon.posts.UnifiedPost;
+import com.ranking.hachathon.posts.UnifiedPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,11 +17,11 @@ import static java.util.Collections.emptySet;
 @Service
 public class VkPostsMonitor {
 
-    // Replace with repository
-    private List<VkPost> result = new ArrayList<>();
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UnifiedPostRepository unifiedPostRepository;
 
     @Autowired
     private VkRequestExecutor vkRequestExecutor;
@@ -26,20 +29,42 @@ public class VkPostsMonitor {
     // 6 hours delay
     @Scheduled(fixedDelayString = "21600000")
     public void monitor() {
-        List<User> users = userRepository.getUserList();
+        List<UserAccount> accounts = accountRepository.findAll();
 
-        // Get top 20 latest posts for users Map<UserId, Set<PostId>
-        Map<String, Set<Integer>> userIdToTopPostIds = new HashMap<>();
+        Set<String> vkUserIds = accounts.stream().map(UserAccount::getUuid).collect(Collectors.toSet());
 
-        for (User user : users) {
-            Set<Integer> processedPostIds = userIdToTopPostIds.computeIfAbsent(user.getId(), k -> emptySet());
+        Map<String, Set<String>> userIdToPostIds;
+        if (vkUserIds.isEmpty()) {
+            userIdToPostIds = new HashMap<>();
+        } else {
+            userIdToPostIds = unifiedPostRepository.findByUserIds(vkUserIds)
+                    .stream()
+                    .collect(Collectors.groupingBy(UnifiedPost::getUserId, Collectors.mapping(UnifiedPost::getPostIdFromSource, Collectors.toSet())));
+        }
 
-            List<VkPost> posts = vkRequestExecutor.getPosts(user.getVkId()).stream()
-                    .filter(vkPost -> !processedPostIds.contains(vkPost.getPostId()))
+        List<UnifiedPost> result = new ArrayList<>();
+        for (UserAccount account : accounts) {
+            Set<String> processedPostIds = userIdToPostIds.computeIfAbsent(account.getUuid(), k -> emptySet());
+
+            List<VkPost> posts = vkRequestExecutor.getPosts(account.getVkId().intValue()).stream()
+                    .filter(vkPost -> !processedPostIds.contains(vkPost.getPostId().toString()))
                     .collect(Collectors.toList());
 
-            result.addAll(posts);
+            result.addAll(posts.stream().map(vkPost -> {
+                UnifiedPost unifiedPost = new UnifiedPost();
+                unifiedPost.setUserId(account.getUuid());
+                unifiedPost.setCommentCount(vkPost.getCommentCount());
+                unifiedPost.setLikeCount(vkPost.getCommentCount());
+                unifiedPost.setSourceType(SourceType.VK);
+                unifiedPost.setPostText(vkPost.getText());
+                unifiedPost.setPublicationDate(vkPost.getCreatedDate());
+                unifiedPost.setPostScore(vkPost.getLikeCount() + vkPost.getCommentCount());
+                unifiedPost.setPostIdFromSource(vkPost.getPostId().toString());
+                return unifiedPost;
+            }).collect(Collectors.toList()));
         }
+
+        unifiedPostRepository.saveAll(result);
     }
 
 }

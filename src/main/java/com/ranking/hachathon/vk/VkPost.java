@@ -1,6 +1,5 @@
 package com.ranking.hachathon.vk;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class VkPost {
@@ -15,7 +14,7 @@ public class VkPost {
     private int repostCount;
     private int viewCount;
     private int commentCount;
-    private LocalDateTime createdDate;
+    private long createdDate;
     private List<VkContent> content;
     private List<VkComment> comments;
 
@@ -83,11 +82,11 @@ public class VkPost {
         this.commentCount = commentCount;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public long getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(long createdDate) {
         this.createdDate = createdDate;
     }
 

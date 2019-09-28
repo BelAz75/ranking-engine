@@ -21,15 +21,17 @@ public class AccountController {
   public void addAccount(@RequestParam(name = "vk", required = false) String vkUrl,
                          @RequestParam(name = "instagram", required = false) String instagramUrl) {
     UserAccount account = new UserAccount();
-    if (vkUrl != null) {
-      account.setName(vkSearchService.getFullName(vkUrl));
-    }
-    if (instagramUrl != null) {
-      AccountInfo accountInfo = instagramScraper.getAccountInfo(instagramUrl);
-      account.setName(accountInfo.fullName);
-      account.setAccountInfo(accountInfo.accountInfo);
-      account.setProfileIcon(accountInfo.profileIconUrl);
-    }
+      if (vkUrl != null) {
+          AccountInfo vkInfo = vkSearchService.getAccountInfo(vkUrl);
+          account.setName(vkInfo.getFullName());
+          account.setVkId(vkInfo.getId());
+      } else if (instagramUrl != null) {
+          AccountInfo instagramInfo = instagramScraper.getAccountInfo(instagramUrl);
+          account.setName(instagramInfo.getFullName());
+          account.setInstagramId(instagramInfo.getId());
+          account.setAccountInfo(instagramInfo.accountInfo);
+          account.setProfileIcon(instagramInfo.profileIconUrl);
+      }
     account.setVkUrl(vkUrl);
     account.setInstagramUrl(instagramUrl);
     accountRepository.save(account);

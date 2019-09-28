@@ -27,6 +27,7 @@ public class InstagramScraperService {
 
   @Autowired
   private UnifiedPostRepository unifiedPostRepository;
+
   @Autowired
   private UnifiedAttachmentRepository unifiedAttachmentRepository;
 
@@ -34,7 +35,8 @@ public class InstagramScraperService {
     try {
       Account account = INSTAGRAM.getAccountByLink(link);
       AccountInfo accountInfo = new AccountInfo();
-      accountInfo.fullName = account.getFullName();
+      accountInfo.setId(account.getId());
+      accountInfo.setFullName(account.getFullName());
       accountInfo.accountInfo = account.getBiography();
       accountInfo.profileIconUrl = account.getProfilePicUrl();
       return accountInfo;

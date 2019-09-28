@@ -25,8 +25,30 @@ public class UserAccount {
   @Column(name = "vk_url")
   private String vkUrl;
 
+  @Column(name = "vk_id")
+  private Long vkId;
+
   @Column(name = "instagram_url")
   private String instagramUrl;
+
+  @Column(name = "instagram_id")
+  private Long instagramId;
+
+  public Long getVkId() {
+    return vkId;
+  }
+
+  public void setVkId(Long vkId) {
+    this.vkId = vkId;
+  }
+
+  public Long getInstagramId() {
+    return instagramId;
+  }
+
+  public void setInstagramId(Long instagramId) {
+    this.instagramId = instagramId;
+  }
 
   public String getUuid() {
     return uuid;
