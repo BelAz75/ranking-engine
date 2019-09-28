@@ -17,6 +17,6 @@ public class RankingEngineEngine {
 
   @GetMapping("/feed")
   public List<Post> getFeed() {
-    return instagramScraper.scanUser("kevin");
+    return instagramScraper.scanUser("aleksandrovechkinofficial");
   }
 }

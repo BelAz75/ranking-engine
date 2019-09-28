@@ -25,9 +25,18 @@ repositories {
 
 
 dependencies {
+	compile 'com.squareup.okhttp3:okhttp:3.2.0'
+	compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.9.2'
+	compile 'com.github.igor-suhorukov:dom-transformation:1.1'
+	compile 'commons-io:commons-io:2.6'
+	compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+	compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.0'
+	compile 'commons-beanutils:commons-beanutils:1.9.3'
+	compileOnly 'org.projectlombok:lombok:1.16.18'
+
 //	implementation('org.springframework.boot:spring-boot-starter-security')
     compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
-	compile group: 'com.github.igor-suhorukov', name: 'instagramscraper', version: '2.2'
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')

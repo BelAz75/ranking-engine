@@ -7,9 +7,9 @@ import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class InstagramScraper {
@@ -20,37 +20,42 @@ public class InstagramScraper {
   }
 
   public List<Post> scanUser(String userName) {
-    Account account = null;
     try {
-      account = INSTAGRAM.getAccountByUsername(userName);
+      Account account = INSTAGRAM.getAccountByUsername(userName);
+      if (account == null) return Collections.emptyList();
+      User user = new User();
+      user.username = account.getUsername();
+      user.fullName = account.getFullName();
+      user.accountInfo = account.getBiography();
+      user.profileIconUrl = account.getProfilePicUrl();
+      return getLatestPosts(account.getMedia().getNodes(), user);
     } catch (IOException e) {
       e.printStackTrace();
-      return Collections.emptyList();
     }
-    if (account == null) return Collections.emptyList();
-    User user = new User();
-    user.username = account.getUsername();
-    user.fullName = account.getFullName();
-    user.accountInfo = account.getBiography();
-    user.profileIconUrl = account.getProfilePicUrl();
-    return getLatestPosts(account.getMedia().getNodes(), user);
+    return Collections.emptyList();
   }
 
-  private List<Post> getLatestPosts(List<Media> medias, User user) {
-    return medias.stream().map(media -> {
+  private List<Post> getLatestPosts(List<Media> medias, User user) throws IOException {
+    List<Post> posts = new ArrayList<>();
+    for (Media media : medias) {
       Post post = new Post();
       post.timestamp = media.getTakenAtTimestamp();
       post.likesCount = media.getLikeCount();
       post.text = media.getCaption();
-      post.contentType = Type.IMAGE;
+      post.contentType = media.getIsVideo() ? Type.VIDEO : Type.IMAGE;
       post.commentsCount = media.getCommentCount();
       Content content = new Content();
       content.height = media.getHeight();
       content.width = media.getWidth();
-      content.url = media.getDisplayUrl();
+      content.imageUrl = media.getDisplayUrl();
+      if (post.contentType == Type.VIDEO) {
+        Media videoMedia = INSTAGRAM.getMediaByCode(media.getShortcode());
+        content.videoUrl = videoMedia.getVideoUrl();
+      }
       post.content = content;
       post.user = user;
-      return post;
-    }).collect(Collectors.toList());
+      posts.add(post);
+    }
+    return posts;
   }
 }
