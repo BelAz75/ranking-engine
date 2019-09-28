@@ -32,7 +32,7 @@ public class FeedController {
   public List<Post> getFeed() {
     Map<String, UserAccount> accountMap = accountRepository.findAll().stream()
                                                         .collect(Collectors.toMap(UserAccount::getUuid, Function.identity()));
-    List<UnifiedPost> posts = unifiedPostRepository.findAll(Sort.by("publication_date"));
+    List<UnifiedPost> posts = unifiedPostRepository.findAll();
     List<Post> result = new ArrayList<>();
     for (UnifiedPost post : posts) {
       List<UnifiedAttachments> attachments = unifiedAttachmentRepository.findAllByPostId(post.getPostIdFromSource());
