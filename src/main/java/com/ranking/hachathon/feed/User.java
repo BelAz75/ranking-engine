@@ -1,4 +1,4 @@
-package com.ranking.hachathon.instagram;
+package com.ranking.hachathon.feed;
 
 public class User {
   public String username;

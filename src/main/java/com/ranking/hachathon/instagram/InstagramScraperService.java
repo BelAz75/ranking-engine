@@ -1,5 +1,7 @@
 package com.ranking.hachathon.instagram;
 
+import com.ranking.hachathon.feed.Post;
+import com.ranking.hachathon.feed.User;
 import com.ranking.hachathon.posts.AttachmentType;
 import com.ranking.hachathon.posts.SourceType;
 import com.ranking.hachathon.posts.UnifiedAttachments;

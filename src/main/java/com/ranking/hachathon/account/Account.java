@@ -16,6 +16,12 @@ public class Account {
   @Column(name = "name")
   private String name;
 
+  @Column(name = "account_info")
+  private String accountInfo;
+
+  @Column(name = "profile_icon")
+  private String profileIcon;
+
   @Column(name = "vk_url")
   private String vkUrl;
 
@@ -36,6 +42,22 @@ public class Account {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getAccountInfo() {
+    return accountInfo;
+  }
+
+  public void setAccountInfo(String accountInfo) {
+    this.accountInfo = accountInfo;
+  }
+
+  public String getProfileIcon() {
+    return profileIcon;
+  }
+
+  public void setProfileIcon(String profileIcon) {
+    this.profileIcon = profileIcon;
   }
 
   public String getVkUrl() {
