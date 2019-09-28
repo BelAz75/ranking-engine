@@ -23,7 +23,7 @@ public class UnifiedPost {
     @Column(name = "post_id_from_source")
     private String postIdFromSource;
 
-    @Column(name = "post_text")
+    @Column(name = "post_text", length = 2048)
     private String postText;
 
     @Column(name = "like_count")

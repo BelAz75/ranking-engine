@@ -125,7 +125,7 @@ public class Instagram implements AuthenticatedInsta {
 
     public Account getAccountByLink(String link) throws IOException {
         Request request = new Request.Builder()
-                .url(link)
+                .url(link + "?__a=1")
                 .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
                 .build();
         Response response = executeHttpRequest(withCsrfToken(request));
@@ -145,9 +145,9 @@ public class Instagram implements AuthenticatedInsta {
         }
     }
 
-    public Account getAccountByUsername(String username) throws IOException {
+    public Account getAccountByUsername(String link) throws IOException {
         Request request = new Request.Builder()
-                .url(Endpoint.getAccountId(username))
+                .url(link + "?__a=1")
                 .build();
         Response response = executeHttpRequest(request);
         try(InputStream jsonStream = response.body().byteStream()) {

@@ -26,10 +26,10 @@ public class UnifiedAttachments {
     @Column(name = "height")
     private int height;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 1024)
     private String imageUrl;
 
-    @Column(name = "video_url")
+    @Column(name = "video_url", length = 1024)
     private String videoUrl;
 
     public String getUuid() {

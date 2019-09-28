@@ -46,10 +46,11 @@ public class InstagramScraperService {
 
   public void saveLatestPosts(String link, UserAccount userAccount) {
     try {
-      Account account = INSTAGRAM.getAccountByLink(link);
+      Account account = INSTAGRAM.getAccountByUsername(link);
       if (account == null) return;
       for (Media media : account.getMedia().getNodes()) {
         UnifiedPost post = new UnifiedPost();
+        post.setUserId(userAccount.getUuid());
         post.setCommentCount(media.getCommentCount());
         post.setLikeCount(media.getLikeCount());
         post.setPublicationDate(media.getTakenAtTimestamp());
