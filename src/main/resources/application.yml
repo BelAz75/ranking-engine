@@ -1,8 +1,13 @@
 spring:
   jpa.properties.hibernate.jdbc.lob.non_contextual_creation: true
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/ranking?charSet=UTF8}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/example?charSet=UTF8}
     driver-class-name: org.postgresql.Driver
+  jpa:
+    properties.hibernate.show_sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
 
 
 #spring.jpa.database-platform=org.hibernate.dialect.Postgre9SQLDialect
