@@ -20,26 +20,32 @@ public class AccountController {
   @PostMapping("/accounts")
   public void addAccount(@RequestParam(name = "vk", required = false) String vkUrl,
                          @RequestParam(name = "instagram", required = false) String instagramUrl) {
-    Account account = new Account();
+    UserAccount account = new UserAccount();
     if (vkUrl != null) {
       account.setName(vkSearchService.getFullName(vkUrl));
     }
     if (instagramUrl != null) {
-      account.setName(instagramScraper.getFullName(instagramUrl));
+      AccountInfo accountInfo = instagramScraper.getAccountInfo(instagramUrl);
+      account.setName(accountInfo.fullName);
+      account.setAccountInfo(accountInfo.accountInfo);
+      account.setProfileIcon(accountInfo.profileIconUrl);
     }
     account.setVkUrl(vkUrl);
     account.setInstagramUrl(instagramUrl);
     accountRepository.save(account);
+    if (instagramUrl != null) {
+      instagramScraper.saveLatestPosts(instagramUrl, account);
+    }
   }
 
   @GetMapping("/accounts")
-  public List<Account> getAccounts() {
+  public List<UserAccount> getAccounts() {
     return accountRepository.findAll();
   }
 
   @DeleteMapping("/accounts")
   public void deleteAccount(@RequestParam(name = "id") String accountId) {
-    Account account = accountRepository.findAccountByUuid(accountId);
+    UserAccount account = accountRepository.findAccountByUuid(accountId);
     if (account != null) {
       accountRepository.deleteById(accountId);
     }

@@ -1,6 +1,6 @@
 package com.ranking.hachathon.feed;
 
-import com.ranking.hachathon.account.Account;
+import com.ranking.hachathon.account.UserAccount;
 import com.ranking.hachathon.account.AccountRepository;
 import com.ranking.hachathon.posts.UnifiedAttachmentRepository;
 import com.ranking.hachathon.posts.UnifiedAttachments;
@@ -30,8 +30,8 @@ public class FeedController {
 
   @GetMapping("/feed")
   public List<Post> getFeed() {
-    Map<String, Account> accountMap = accountRepository.findAll().stream()
-                                                        .collect(Collectors.toMap(Account::getUuid, Function.identity()));
+    Map<String, UserAccount> accountMap = accountRepository.findAll().stream()
+                                                        .collect(Collectors.toMap(UserAccount::getUuid, Function.identity()));
     List<UnifiedPost> posts = unifiedPostRepository.findAll(Sort.by("publication_date"));
     List<Post> result = new ArrayList<>();
     for (UnifiedPost post : posts) {

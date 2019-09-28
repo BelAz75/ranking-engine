@@ -1,20 +1,19 @@
 package com.ranking.hachathon.instagram;
 
-import com.ranking.hachathon.feed.Post;
-import com.ranking.hachathon.feed.User;
-import com.ranking.hachathon.posts.AttachmentType;
-import com.ranking.hachathon.posts.SourceType;
-import com.ranking.hachathon.posts.UnifiedAttachments;
-import com.ranking.hachathon.posts.UnifiedPost;
+import com.ranking.hachathon.account.AccountInfo;
+import com.ranking.hachathon.account.UserAccount;
+import com.ranking.hachathon.posts.*;
 import me.postaddict.instagram.scraper.Endpoint;
 import me.postaddict.instagram.scraper.Instagram;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.Media;
 import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,55 +25,55 @@ public class InstagramScraperService {
     INSTAGRAM = new Instagram(httpClient);
   }
 
-  public String getFullName(String link) {
+  @Autowired
+  private UnifiedPostRepository unifiedPostRepository;
+  @Autowired
+  private UnifiedAttachmentRepository unifiedAttachmentRepository;
+
+  public AccountInfo getAccountInfo(String link) {
     try {
       Account account = INSTAGRAM.getAccountByLink(link);
-      return account.getFullName();
+      AccountInfo accountInfo = new AccountInfo();
+      accountInfo.fullName = account.getFullName();
+      accountInfo.accountInfo = account.getBiography();
+      accountInfo.profileIconUrl = account.getProfilePicUrl();
+      return accountInfo;
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return "";
+    return null;
   }
 
-  public List<Post> scanUser(String userName) {
+  public void saveLatestPosts(String link, UserAccount userAccount) {
     try {
-      Account account = INSTAGRAM.getAccountByUsername(userName);
-      if (account == null) return Collections.emptyList();
-      User user = new User();
-      user.username = account.getUsername();
-      user.fullName = account.getFullName();
-      user.accountInfo = account.getBiography();
-      user.profileIconUrl = account.getProfilePicUrl();
-      return getLatestPosts(account.getMedia().getNodes(), user);
+      Account account = INSTAGRAM.getAccountByLink(link);
+      if (account == null) return;
+      for (Media media : account.getMedia().getNodes()) {
+        UnifiedPost post = new UnifiedPost();
+        post.setCommentCount(media.getCommentCount());
+        post.setLikeCount(media.getLikeCount());
+        post.setPublicationDate(media.getTakenAtTimestamp());
+        post.setPostText(handleText(media.getCaption()));
+        post.setSourceType(SourceType.INSTAGRAM);
+        post.setPostIdFromSource(media.getShortcode());
+        unifiedPostRepository.save(post);
+
+        UnifiedAttachments attachments = new UnifiedAttachments();
+        attachments.setPostId(media.getShortcode());
+        attachments.setHeight(media.getHeight());
+        attachments.setWidth(media.getWidth());
+        attachments.setAttachmentType(media.getIsVideo() ? AttachmentType.VIDEO : AttachmentType.PHOTO);
+        attachments.setImageUrl(media.getDisplayUrl());
+
+        if (attachments.getAttachmentType() == AttachmentType.VIDEO) {
+          Media videoMedia = INSTAGRAM.getMediaByCode(media.getShortcode());
+          attachments.setVideoUrl(videoMedia.getVideoUrl());
+        }
+        unifiedAttachmentRepository.save(attachments);
+      }
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return Collections.emptyList();
-  }
-
-  private List<Post> getLatestPosts(List<Media> medias, User user) throws IOException {
-    List<Post> posts = new ArrayList<>();
-    for (Media media : medias) {
-      UnifiedPost post = new UnifiedPost();
-      post.setCommentCount(media.getCommentCount());
-      post.setLikeCount(media.getLikeCount());
-      post.setPublicationDate(media.getTakenAtTimestamp());
-      post.setPostText(handleText(media.getCaption()));
-      post.setSourceType(SourceType.INSTAGRAM);
-      post.setPostIdFromSource(media.getShortcode());
-
-      UnifiedAttachments attachments = new UnifiedAttachments();
-      attachments.setHeight(media.getHeight());
-      attachments.setWidth(media.getWidth());
-      attachments.setAttachmentType(media.getIsVideo() ? AttachmentType.VIDEO : AttachmentType.PHOTO);
-      attachments.setImageUrl(media.getDisplayUrl());
-
-      if (attachments.getAttachmentType() == AttachmentType.VIDEO) {
-        Media videoMedia = INSTAGRAM.getMediaByCode(media.getShortcode());
-        attachments.setVideoUrl(videoMedia.getVideoUrl());
-      }
-    }
-    return posts;
   }
 
   private String handleText(String content) {

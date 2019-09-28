@@ -1,6 +1,6 @@
 package com.ranking.hachathon.feed;
 
-import com.ranking.hachathon.account.Account;
+import com.ranking.hachathon.account.UserAccount;
 import com.ranking.hachathon.posts.UnifiedAttachments;
 import com.ranking.hachathon.posts.UnifiedPost;
 
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Converter {
-    static Post convert(UnifiedPost post, List<UnifiedAttachments> attachments, Account account) {
+    static Post convert(UnifiedPost post, List<UnifiedAttachments> attachments, UserAccount account) {
         Post result = new Post();
         result.timestamp = post.getPublicationDate();
         result.likesCount = post.getLikeCount();
@@ -32,7 +32,7 @@ public class Converter {
         }).collect(Collectors.toList());
     }
 
-    private static User convert(Account account) {
+    private static User convert(UserAccount account) {
         User user = new User();
         user.profileIconUrl = account.getProfileIcon();
         user.fullName = account.getName();
