@@ -6,4 +6,6 @@ public class Post {
   public String text;
   public Type contentType;
   public Content content;
+  public int commentsCount;
+  public User user;
 }

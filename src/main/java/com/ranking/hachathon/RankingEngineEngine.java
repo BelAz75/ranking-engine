@@ -11,12 +11,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api", produces = "application/json")
-public class InstagramSearchEngine {
+public class RankingEngineEngine {
   @Autowired
   private InstagramScraper instagramScraper;
 
-  @GetMapping("/instagram")
-  public List<Post> getInstagramUserInfo() {
+  @GetMapping("/feed")
+  public List<Post> getFeed() {
     return instagramScraper.scanUser("kevin");
   }
 }

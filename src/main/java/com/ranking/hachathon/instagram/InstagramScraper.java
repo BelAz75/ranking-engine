@@ -3,7 +3,6 @@ package com.ranking.hachathon.instagram;
 import me.postaddict.instagram.scraper.Instagram;
 import me.postaddict.instagram.scraper.model.Account;
 import me.postaddict.instagram.scraper.model.Media;
-import me.postaddict.instagram.scraper.model.PageObject;
 import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Service;
 
@@ -34,21 +33,23 @@ public class InstagramScraper {
     user.fullName = account.getFullName();
     user.accountInfo = account.getBiography();
     user.profileIconUrl = account.getProfilePicUrl();
-    return getLatestPosts(account.getMedia().getNodes());
+    return getLatestPosts(account.getMedia().getNodes(), user);
   }
 
-  private List<Post> getLatestPosts(List<Media> medias) {
+  private List<Post> getLatestPosts(List<Media> medias, User user) {
     return medias.stream().map(media -> {
       Post post = new Post();
       post.timestamp = media.getTakenAtTimestamp();
       post.likesCount = media.getLikeCount();
       post.text = media.getCaption();
       post.contentType = Type.IMAGE;
+      post.commentsCount = media.getCommentCount();
       Content content = new Content();
       content.height = media.getHeight();
       content.width = media.getWidth();
       content.url = media.getDisplayUrl();
       post.content = content;
+      post.user = user;
       return post;
     }).collect(Collectors.toList());
   }
