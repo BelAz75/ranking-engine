@@ -20,6 +20,16 @@ public class InstagramScraper {
     INSTAGRAM = new Instagram(httpClient);
   }
 
+  public String getFullName(String link) {
+    try {
+      Account account = INSTAGRAM.getAccountByLink(link);
+      return account.getFullName();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return "";
+  }
+
   public List<Post> scanUser(String userName) {
     try {
       Account account = INSTAGRAM.getAccountByUsername(userName);

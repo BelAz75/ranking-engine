@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api", produces = "application/json")
-public class RankingEngineEngine {
+public class FeedController {
   @Autowired
   private InstagramScraper instagramScraper;
 

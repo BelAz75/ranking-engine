@@ -123,6 +123,17 @@ public class Instagram implements AuthenticatedInsta {
         }
     }
 
+    public Account getAccountByLink(String link) throws IOException {
+        Request request = new Request.Builder()
+                .url(link)
+                .header(Endpoint.REFERER, Endpoint.BASE_URL + "/")
+                .build();
+        Response response = executeHttpRequest(withCsrfToken(request));
+        try(InputStream jsonStream = response.body().byteStream()) {
+            return getMediaByCode(mapper.getLastMediaShortCode(jsonStream)).getOwner();
+        }
+    }
+
     public Account getAccountById(long id) throws IOException {
         Request request = new Request.Builder()
                 .url(Endpoint.getAccountJsonInfoLinkByAccountId(id))

@@ -7,6 +7,8 @@ import com.vk.api.sdk.client.actors.ServiceActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
+import com.vk.api.sdk.objects.users.Fields;
+import com.vk.api.sdk.objects.users.UserXtrCounters;
 import com.vk.api.sdk.objects.wall.WallpostAttachmentType;
 import com.vk.api.sdk.objects.wall.WallpostFull;
 import com.vk.api.sdk.objects.wall.responses.GetResponse;
@@ -25,12 +27,31 @@ import java.util.stream.Collectors;
 
 @Component
 public class VkRequestExecutor {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(VkRequestExecutor.class);
-
+    private static final String URL = "https://vk.com/";
     private static final Integer APP_ID = 7151401;
     private static final String ACCESS_TOKEN = "6f56bd416f56bd416f56bd412b6f3ba26866f566f56bd4132d9f1c077161680c2ff8f10";
     private static final String CLIENT_SECRET = "ZDurOdNGKw1bpP9c6Mo7";
+
+    public String getFullName(String link) {
+        try {
+            TransportClient transportClient = HttpTransportClient.getInstance();
+            VkApiClient vk = new VkApiClient(transportClient, new Gson(), 3);
+            ServiceActor actor = new ServiceActor(APP_ID, CLIENT_SECRET, ACCESS_TOKEN);
+
+            List<UserXtrCounters> userCounters = vk.users().get(actor)
+                                                              .userIds(link.substring(URL.length()))
+                                                              .fields(Fields.SCREEN_NAME)
+                                                              .execute();
+            if (userCounters.size() > 0) {
+                UserXtrCounters user = userCounters.get(0);
+                return user.getFirstName() + " " + user.getLastName();
+            }
+        } catch (ApiException | ClientException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     public List<VkUser> makeGetUsersRequest(Set<String> ids) {
         TransportClient transportClient = HttpTransportClient.getInstance();

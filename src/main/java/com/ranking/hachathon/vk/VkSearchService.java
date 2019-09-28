@@ -16,4 +16,7 @@ public class VkSearchService {
         return vkRequestExecutor.makeGetUsersRequest(ids);
     }
 
+    public String getFullName(String link) {
+        return vkRequestExecutor.getFullName(link);
+    }
 }
