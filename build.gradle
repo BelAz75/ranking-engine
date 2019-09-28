@@ -26,9 +26,9 @@ repositories {
 
 dependencies {
 //	implementation('org.springframework.boot:spring-boot-starter-security')
-    // https://mvnrepository.com/artifact/org.postgresq/postgresql
     compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile group: 'com.github.igor-suhorukov', name: 'instagramscraper', version: '2.2'
+	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	testImplementation('org.springframework.security:spring-security-test')
