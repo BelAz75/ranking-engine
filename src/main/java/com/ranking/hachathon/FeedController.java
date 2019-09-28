@@ -1,6 +1,6 @@
 package com.ranking.hachathon;
 
-import com.ranking.hachathon.instagram.InstagramScraper;
+import com.ranking.hachathon.instagram.InstagramScraperService;
 import com.ranking.hachathon.instagram.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping(value = "/api", produces = "application/json")
 public class FeedController {
   @Autowired
-  private InstagramScraper instagramScraper;
+  private InstagramScraperService instagramScraper;
 
   @GetMapping("/feed")
   public List<Post> getFeed() {

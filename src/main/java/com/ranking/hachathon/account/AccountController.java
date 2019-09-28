@@ -1,6 +1,6 @@
 package com.ranking.hachathon.account;
 
-import com.ranking.hachathon.instagram.InstagramScraper;
+import com.ranking.hachathon.instagram.InstagramScraperService;
 import com.ranking.hachathon.vk.VkSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ public class AccountController {
   @Autowired
   private AccountRepository accountRepository;
   @Autowired
-  private InstagramScraper instagramScraper;
+  private InstagramScraperService instagramScraper;
   @Autowired
   private VkSearchService vkSearchService;
 

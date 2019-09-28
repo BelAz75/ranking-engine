@@ -1,5 +1,9 @@
 package com.ranking.hachathon.instagram;
 
+import com.ranking.hachathon.posts.AttachmentType;
+import com.ranking.hachathon.posts.SourceType;
+import com.ranking.hachathon.posts.UnifiedAttachments;
+import com.ranking.hachathon.posts.UnifiedPost;
 import me.postaddict.instagram.scraper.Endpoint;
 import me.postaddict.instagram.scraper.Instagram;
 import me.postaddict.instagram.scraper.model.Account;
@@ -13,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class InstagramScraper {
+public class InstagramScraperService {
   private static Instagram INSTAGRAM;
   static {
     OkHttpClient httpClient = new OkHttpClient();
@@ -49,24 +53,24 @@ public class InstagramScraper {
   private List<Post> getLatestPosts(List<Media> medias, User user) throws IOException {
     List<Post> posts = new ArrayList<>();
     for (Media media : medias) {
-      Post post = new Post();
-      post.timestamp = media.getTakenAtTimestamp();
-      post.likesCount = media.getLikeCount();
-      post.text = handleText(media.getCaption());
-      post.contentType = media.getIsVideo() ? Type.VIDEO : Type.IMAGE;
-      post.commentsCount = media.getCommentCount();
-      Content content = new Content();
-      content.height = media.getHeight();
-      content.width = media.getWidth();
-      content.imageUrl = media.getDisplayUrl();
-      if (post.contentType == Type.VIDEO) {
+      UnifiedPost post = new UnifiedPost();
+      post.setCommentCount(media.getCommentCount());
+      post.setLikeCount(media.getLikeCount());
+      post.setPublicationDate(media.getTakenAtTimestamp());
+      post.setPostText(handleText(media.getCaption()));
+      post.setSourceType(SourceType.INSTAGRAM);
+      post.setPostIdFromSource(media.getShortcode());
+
+      UnifiedAttachments attachments = new UnifiedAttachments();
+      attachments.setHeight(media.getHeight());
+      attachments.setWidth(media.getWidth());
+      attachments.setAttachmentType(media.getIsVideo() ? AttachmentType.VIDEO : AttachmentType.PHOTO);
+      attachments.setImageUrl(media.getDisplayUrl());
+
+      if (attachments.getAttachmentType() == AttachmentType.VIDEO) {
         Media videoMedia = INSTAGRAM.getMediaByCode(media.getShortcode());
-        content.videoUrl = videoMedia.getVideoUrl();
-        content.videoViewCount = videoMedia.getVideoViewCount();
+        attachments.setVideoUrl(videoMedia.getVideoUrl());
       }
-      post.content = content;
-      post.user = user;
-      posts.add(post);
     }
     return posts;
   }

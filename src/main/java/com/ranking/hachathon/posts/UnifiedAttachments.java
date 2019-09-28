@@ -26,8 +26,11 @@ public class UnifiedAttachments {
     @Column(name = "height")
     private int height;
 
-    @Column(name = "url")
-    private String url;
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "video_url")
+    private String videoUrl;
 
     public String getUuid() {
         return uuid;
@@ -69,12 +72,19 @@ public class UnifiedAttachments {
         this.height = height;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
 }
